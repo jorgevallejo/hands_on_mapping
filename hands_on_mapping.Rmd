@@ -98,3 +98,59 @@ rm(urls)
 
 En este caso hemos descargado dos ficheros FastQ correspondientes a datos paired-end, como los que podríamos obtener de un servicio de secuenciación.
 
+# Control de calidad con FastQC
+
+```{r running fastqc}
+fastqc(fq.dir = "data/", # Where the FastQ files are
+       qc.dir = "results/QC") # Where to store the results
+
+# Generate a table with the results of the reports
+kable(qc_aggregate("results/QC"))
+```
+
+Los informes en formato HTML se pueden consultar también siguiendo este enlace:
+[Carpeta de resultados](./QC/)
+
+La **calidad de secuencias por base** es un poco baja al principio y final de las secuencias, pero no preocupante.
+
+Nos han aparecido avisos en **read2** en **calidad de secuencia por tile** y en **secuencias sobrerrepresentadas**. Tales secuencias sobrerrepresentadas son secuencias compuestas por N; esto es, bases no reconocidas.
+
+
+
+
+# Trimming and filtering
+La calidad de las secuencias disminuye  en el extremo de las secuencias. Para evitar sesgos en los análisis, recortaremos esos finales de secuencia de baja calidad con la herramienta [Cutadapt](https://cutadapt.readthedocs.io/en/stable/).
+
+```{r install the tool, eval=FALSE}
+system("python3 -m pip install --user --upgrade cutadapt")
+```
+
+```{r Use cutadapt}
+# Remove reads shorter than 20bp
+
+# Remove ends with low quality (< 20)
+
+# system("cutadapt --quality-cutoff 20,20 --minimum-length 20 -o 'intermediateData/trimmed.fastq'
+#        'data/GSM461178_untreat_paired_subset_1.fastq'")
+
+system2('cutadapt',
+        args = "--quality-cutoff 20,20 --minimum-length 20 -o 'intermediateData/trimmed.fastq' 'data/GSM461178_untreat_paired_subset_1.fastq'")
+```
+
+## Segundo control de calidad
+
+Volvemos a hacer un control de calidad, pero esta vez con los datos pre-procesados.
+
+```{r QC after trimming and filtering}
+fastqc(fq.dir = "intermediateData/", # Where the FastQ files are
+       qc.dir = "results/QC2") # Where to store the results
+
+# Generate a table with the results of the reports
+kable(qc_aggregate("results/QC2"))
+```
+
+Los informes en formato HTML se pueden consultar también siguiendo este enlace:
+[Carpeta de resultados](./QC2/)
+
+
+El resultado esperado es que la calidad por base de la secuencia aumente un poco (ya que hemos eliminado extremos de secuencia con baja calidad), y que aparezca un aviso referente a la distribución de longitudes de las secuencias (ya que hemos recortado la longitud de algunas secuencias).
