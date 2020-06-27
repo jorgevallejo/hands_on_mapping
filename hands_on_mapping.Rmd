@@ -1,0 +1,78 @@
+---
+  title: "Las otras ómicas - Mapping"
+subtitle: "Análisis Datos Ómicos"
+author: "Jorge Vallejo Ortega"
+date: '`r format(Sys.Date(),"%e de %B, %Y")`'
+output:
+  html_document:
+  toc: true
+pdf_document:
+  number_sections: true
+toc: true
+header-includes:
+  - \renewcommand{\contentsname}{Índice}
+
+# Next code for knitting both types of documents automatically comes from https://stackoverflow.com/questions/39662365/knit-one-markdown-file-to-two-output-files/53280491#53280491
+knit: (function(inputFile, encoding) {
+  rmarkdown::render(inputFile, encoding = encoding,
+                    output_format = "all",
+                    output_dir = "results") })
+# And:
+# https://stackoverflow.com/a/46007686/10647267
+
+# bibliography: references.bib
+---
+  
+  ```{r setup, include=FALSE}
+# knitr options
+
+# Do not display code in output document
+knitr::opts_chunk$set(echo = FALSE,
+                      message = FALSE,
+                      warning = FALSE,
+                      fig.align = "center")
+```
+
+```{r estructura de directorios, results='hide'}
+# 'data' contains raw source data.
+# 'intermediateData' contains .RData objects with processed data.
+# 'results' stores the final report files.
+
+directories <- c("data", "results", "intermediateData", "images")
+
+# Create directories
+lapply(directories, function(x){
+  if (!(dir.exists(x))){
+    dir.create(x)
+  }
+})
+
+# Remove variable directories
+rm(directories)
+```
+
+```{r delete results files, eval= FALSE}
+# Run this chunk ONLY if you want to re-do
+# the complete the report FROM THE ORIGINAL DATA.
+# Remember that the .RData files are there to
+# avoid unnecesarily redoing of long data processing.
+
+directories <- c("results/", "intermediateData/", "images/")
+
+file.remove(
+  # Create a character vector of relative paths
+  # to all files in the variable directories
+  list.files(path = directories,
+             all.files = TRUE,
+             full.names = TRUE,
+             recursive = TRUE)
+)
+
+rm(directories)
+```
+
+```{r libraries, include=FALSE}
+# Load packages
+library(knitr)
+library(fastqcr)
+```
