@@ -76,3 +76,25 @@ rm(directories)
 library(knitr)
 library(fastqcr)
 ```
+
+# Adquisición de datos
+
+Descargamos ficheros FASTQ de ejemplo.
+```{r download data, eval=FALSE}
+# Training material
+# https://zenodo.org/record/61771
+
+urls <- c("https://zenodo.org/record/1324070/files/wt_H3K4me3_read1.fastq.gz",
+          "https://zenodo.org/record/1324070/files/wt_H3K4me3_read2.fastq.gz")
+
+for (url in urls){
+download.file(url = url,
+              destfile = file.path("data", basename(url)),
+              method = 'auto')
+}
+
+rm(urls)
+```
+
+En este caso hemos descargado dos ficheros FastQ correspondientes a datos paired-end, como los que podríamos obtener de un servicio de secuenciación.
+
