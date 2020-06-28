@@ -1,5 +1,5 @@
 ---
-  title: "Las otras ómicas - Mapping"
+title: "Las otras ómicas - Mapping"
 subtitle: "Análisis Datos Ómicos"
 author: "Jorge Vallejo Ortega"
 date: '`r format(Sys.Date(),"%e de %B, %Y")`'
@@ -180,7 +180,7 @@ El resultado esperado es que la calidad por base de la secuencia aumente un poco
 
 Robwtie2 is a wrapper in R for Bowtie2, a tool for aligning sequencing reads to long reference sequences.
 
-```{r build bowtie2 index}
+```{r build bowtie2 index, eval=FALSE}
 # library(Rbowtie2)
 # 
 refs <- dir(path = "reference", full = TRUE) # Location of reference genome
