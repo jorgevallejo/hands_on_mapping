@@ -119,22 +119,35 @@ Nos han aparecido avisos en **read2** en **calidad de secuencia por tile** y en 
 
 
 # Trimming and filtering
-La calidad de las secuencias disminuye  en el extremo de las secuencias. Para evitar sesgos en los análisis, recortaremos esos finales de secuencia de baja calidad con la herramienta [Cutadapt](https://cutadapt.readthedocs.io/en/stable/).
+La calidad de las secuencias disminuye  en el extremo de las secuencias. Para evitar sesgos en los análisis, recortaremos esos finales de secuencia de baja calidad con la herramienta [Cutadapt](https://cutadapt.readthedocs.io/en/stable/). También filtraremos y eliminaremos las secuencias de menos de 20bp.
 
 ```{r install the tool, eval=FALSE}
 system("python3 -m pip install --user --upgrade cutadapt")
 ```
 
 ```{r Use cutadapt}
-# Remove reads shorter than 20bp
+# List input files
+input <- list.files(path = "data/")
 
+# Create directory for trimmed reads
+if (!dir.exists("intermediateData/trimmed")){
+  dir.create("intermediateData/trimmed")
+}
+
+# Remove reads shorter than 20bp
 # Remove ends with low quality (< 20)
 
-# system("cutadapt --quality-cutoff 20,20 --minimum-length 20 -o 'intermediateData/trimmed.fastq'
-#        'data/GSM461178_untreat_paired_subset_1.fastq'")
+args <- paste0("--quality-cutoff 20,20 --minimum-length 20 -o 'intermediateData/trimmed/",
+       input[1],"' ", # First output file
+       "-p 'intermediateData/trimmed/",
+       input[2],"' ", # Second output file
+       "'data/",
+       input[1],"' ", # First input file
+       "'data/",
+       input[2],"'") # Second infput file
 
 system2('cutadapt',
-        args = "--quality-cutoff 20,20 --minimum-length 20 -o 'intermediateData/trimmed.fastq' 'data/GSM461178_untreat_paired_subset_1.fastq'")
+        args = args)
 ```
 
 ## Segundo control de calidad
