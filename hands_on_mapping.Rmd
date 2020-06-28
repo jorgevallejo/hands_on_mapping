@@ -38,7 +38,7 @@ knitr::opts_chunk$set(echo = FALSE,
 # 'intermediateData' contains .RData objects with processed data.
 # 'results' stores the final report files.
 
-directories <- c("data", "results", "intermediateData", "images")
+directories <- c("data", "results", "intermediateData", "reference")
 
 # Create directories
 lapply(directories, function(x){
@@ -79,7 +79,7 @@ library(fastqcr)
 
 # Adquisición de datos
 
-Descargamos ficheros FASTQ de ejemplo.
+Descargamos ficheros FASTQ de ejemplo y fichero FASTA de referencia.
 ```{r download data, eval=FALSE}
 # Training material
 # https://zenodo.org/record/61771
@@ -93,10 +93,18 @@ download.file(url = url,
               method = 'auto')
 }
 
-rm(urls)
+# Reference genome
+reference <- "ftp://ftp.ensembl.org/pub/release-100/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.primary_assembly.fa.gz"
+download.file(url = reference,
+              destfile = file.path("reference", basename(reference)))
+
+
+rm(c(urls, reference))
 ```
 
 En este caso hemos descargado dos ficheros FastQ correspondientes a datos paired-end, como los que podríamos obtener de un servicio de secuenciación.
+
+Como genoma de referencia hemos descargado el genoma de ratón (primary assembly) desde [Ensembl](http://www.ensembl.org/Mus_musculus/Info/Index) (versión GRCm38.p6).
 
 # Control de calidad con FastQC
 
@@ -167,3 +175,18 @@ Los informes en formato HTML se pueden consultar también siguiendo este enlace:
 
 
 El resultado esperado es que la calidad por base de la secuencia aumente un poco (ya que hemos eliminado extremos de secuencia con baja calidad), y que aparezca un aviso referente a la distribución de longitudes de las secuencias (ya que hemos recortado la longitud de algunas secuencias). Además hemos eliminado la sobrerrepresentación de secuencias compuestas por bases no asignadas, que probablemente coincidirían con bases de baja calidad.
+
+# Mapping with Rbowtie2
+
+Robwtie2 is a wrapper in R for Bowtie2, a tool for aligning sequencing reads to long reference sequences.
+
+```{r build bowtie2 index}
+library(Rbowtie2)
+td <- tempdir() # Temporary directory
+refs <- dir(system.file(package = 'Rbowtie2', 'extdata', 'bt2', 'refs'), full = TRUE)
+(cmdout <- bowtie2_build(references = refs,
+                         bt2Index=file.path(td, 'lambda_virus'),
+                         "--threads 4 --quiet",
+                         overwrite=TRUE))
+```
+
