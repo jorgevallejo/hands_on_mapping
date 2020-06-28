@@ -181,12 +181,20 @@ El resultado esperado es que la calidad por base de la secuencia aumente un poco
 Robwtie2 is a wrapper in R for Bowtie2, a tool for aligning sequencing reads to long reference sequences.
 
 ```{r build bowtie2 index}
-library(Rbowtie2)
-td <- tempdir() # Temporary directory
-refs <- dir(system.file(package = 'Rbowtie2', 'extdata', 'bt2', 'refs'), full = TRUE)
-(cmdout <- bowtie2_build(references = refs,
-                         bt2Index=file.path(td, 'lambda_virus'),
-                         "--threads 4 --quiet",
-                         overwrite=TRUE))
+# library(Rbowtie2)
+# 
+refs <- dir(path = "reference", full = TRUE) # Location of reference genome
+# 
+# 
+# bowtie2_build(references = refs,
+#                          bt2Index="intermediateData",
+#                          overwrite=TRUE)
+
+
+args <- paste0(refs, # reference FASTA
+       " intermediateData/bowtie2/GRCm38") # Ouput index files
+
+system2('bowtie2-build',
+        args = args)
 ```
 
