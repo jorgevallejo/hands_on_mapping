@@ -155,7 +155,7 @@ system2('cutadapt',
 Volvemos a hacer un control de calidad, pero esta vez con los datos pre-procesados.
 
 ```{r QC after trimming and filtering}
-fastqc(fq.dir = "intermediateData/", # Where the FastQ files are
+fastqc(fq.dir = "intermediateData/trimmed", # Where the FastQ files are
        qc.dir = "results/QC2") # Where to store the results
 
 # Generate a table with the results of the reports
@@ -166,4 +166,4 @@ Los informes en formato HTML se pueden consultar también siguiendo este enlace:
 [Carpeta de resultados](./QC2/)
 
 
-El resultado esperado es que la calidad por base de la secuencia aumente un poco (ya que hemos eliminado extremos de secuencia con baja calidad), y que aparezca un aviso referente a la distribución de longitudes de las secuencias (ya que hemos recortado la longitud de algunas secuencias).
+El resultado esperado es que la calidad por base de la secuencia aumente un poco (ya que hemos eliminado extremos de secuencia con baja calidad), y que aparezca un aviso referente a la distribución de longitudes de las secuencias (ya que hemos recortado la longitud de algunas secuencias). Además hemos eliminado la sobrerrepresentación de secuencias compuestas por bases no asignadas, que probablemente coincidirían con bases de baja calidad.
